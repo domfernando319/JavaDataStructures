@@ -1,8 +1,8 @@
 /**
  * Your implementation of a circular singly linked list.
  *
- * @author Hwuiwon Kim
- * @userid hkim944
+ * @author Dom Fernando
+ * @userid
  * @version 1.0
  */
 public class SinglyLinkedList<T> {
@@ -23,36 +23,43 @@ public class SinglyLinkedList<T> {
      * @throws IllegalArgumentException if data is null
      */
     public void addAtIndex(int index, T data) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index should be"
-                    + " between 0 and size");
-        } else if (data == null) {
-            throw new IllegalArgumentException("Data can't be null");
+        if (data == null) {
+            throw new IllegalArgumentException("data cannot be null");
+
+        } else if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("not a valid index");
         }
-        LinkedListNode<T> tmp = new LinkedListNode<>(data);
-        LinkedListNode<T> current = head;
+
+        LinkedListNode<T> temp = new LinkedListNode<>(data);
+        LinkedListNode<T> curr = head;
         if (size == 0) {
-            head = tmp;
+            // Case where list is empty
+
+            head = temp;
             head.setNext(head);
         } else if (index == 0) {
-            tmp.setNext(head.getNext());
-            tmp.setData(head.getData());
-            head.setNext(tmp);
+            // case where we add to the very front
+            LinkedListNode<T> newNode = new LinkedListNode<>(head.getData(), head.getNext());
             head.setData(data);
+            head.setNext(newNode);
+
         } else if (index == size) {
-            while (current.getNext() != head) {
-                current = current.getNext();
-            }
-            current.setNext(tmp);
-            tmp.setNext(head);
+            // case where we add to the very end
+            LinkedListNode<T> newNode = new LinkedListNode<>(head.getData(), head.getNext());
+            newNode.setData(head.getData());
+            head.setNext(newNode);
+            head.setData(data);
+            head = head.getNext();
         } else {
-            for (int i = 0; i < index - 1; i++) {
-                current = current.getNext();
+            // case where we add to the middle of list
+            for (int i = 0; i < index - 1 ; i++ ) {
+                curr = curr.getNext();
             }
-            tmp.setNext(current.getNext());
-            current.setNext(tmp);
+            temp.setNext(curr.getNext());
+            curr.setNext(temp);
+
         }
-        size++;
+        size ++;
     }
 
     /**
@@ -90,37 +97,36 @@ public class SinglyLinkedList<T> {
      * index >= size
      */
     public T removeAtIndex(int index) {
-        if (isEmpty()) {
-            return null;
-        }
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index should be"
-                    + " between 0 and size");
+            throw new IndexOutOfBoundsException("Index must be in range (0, size - 1) ");
         }
-
-        T tmp;
-        LinkedListNode<T> current = head;
+        T removedData;
         if (index == 0) {
-            tmp = head.getData();
-            head.setData(head.getNext().getData());
-            head.setNext(head.getNext().getNext());
-        } else if (index == size) {
-            while (current.getNext().getNext() != head) {
-                current = current.getNext();
+            removedData = head.getData();
+            if (size == 1) {
+                head = null;
+            } else {
+                head.setData(head.getNext().getData());
+                head.setNext(head.getNext().getNext());
             }
-            tmp = current.getNext().getData();
-            current.setNext(head);
+        } else if (index == size - 1) {
+            LinkedListNode<T> curr = head;
+            while (curr.getNext().getNext() != head) {
+                curr = curr.getNext();
+            }
+            removedData = curr.getNext().getData();
+            curr.setNext(head);
         } else {
-            for (int i = 1; i < index; i++) {
-                current = current.getNext();
+            LinkedListNode<T> curr = head;
+            for (int i = 0; i < index - 1; i++) {
+                curr = curr.getNext();
             }
-            tmp = current.getNext().getData();
-            current.setNext(current.getNext().getNext());
+            removedData = curr.getNext().getData();
+            curr.setNext(curr.getNext().getNext());
+
         }
-        if (--size == 0) {
-            head = null;
-        }
-        return tmp;
+        size--;
+        return removedData;
     }
 
     /**
@@ -159,32 +165,47 @@ public class SinglyLinkedList<T> {
      */
     public T removeLastOccurrence(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Data can't be null");
+            throw new IllegalArgumentException("Data cannot be null");
         }
-        if (size == 0) {
+
+        if (head == null) { // List is empty
             return null;
-        } else {
-            LinkedListNode<T> tmp = head;
-            LinkedListNode<T> tmp2 = null;
-            if (head.getData().equals(data)) {
-                tmp2 = tmp;
-            }
-            tmp = tmp.getNext();
-            while (tmp != head && tmp != null) {
-                if (tmp.getNext().getData().equals(data)) {
-                    tmp2 = tmp;
-                }
-                tmp = tmp.getNext();
-            }
-            if (tmp2 != null) {
-                tmp = tmp2.getNext();
-                tmp2.setNext(tmp2.getNext().getNext());
-                if (--size == 0) {
-                    head = null;
-                }
-            }
-            return tmp.getData();
         }
+
+        LinkedListNode<T> current = head;
+        LinkedListNode<T> lastOccurrence = null;
+        LinkedListNode<T> prevToLastOccurrence = null;
+        LinkedListNode<T> prev = null;
+
+        do {
+            if (current.getData().equals(data)) {
+                lastOccurrence = current;
+                prevToLastOccurrence = prev;
+            }
+            prev = current;
+            current = current.getNext();
+        } while (current != head);
+
+        if (lastOccurrence == null) { // Data not found
+            return null;
+        }
+
+        T removedData = lastOccurrence.getData();
+
+        // Removing the head (last occurrence is head)
+        if (lastOccurrence == head) {
+            if (head.getNext() == head) { // Only one element in the list
+                head = null;
+            } else {
+                head.setData(head.getNext().getData());
+                head.setNext(head.getNext().getNext());
+            }
+        } else { // Removing a non-head node
+            prevToLastOccurrence.setNext(lastOccurrence.getNext());
+        }
+
+        size--;
+        return removedData;
     }
 
     /**
@@ -199,16 +220,15 @@ public class SinglyLinkedList<T> {
      */
     public T get(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index should be"
-                    + " between 0 and size");
+            throw new IndexOutOfBoundsException("Index not in range (0, size)");
         } else if (index == 0) {
             return head.getData();
         } else {
-            LinkedListNode<T> tmp = head;
+            LinkedListNode<T> curr = head;
             for (int i = 0; i < index; i++) {
-                tmp = tmp.getNext();
+                curr = curr.getNext();
             }
-            return tmp.getData();
+            return curr.getData();
         }
     }
 
@@ -221,11 +241,12 @@ public class SinglyLinkedList<T> {
      * this list in the same order
      */
     public Object[] toArray() {
-        T[] arr = (T[]) new Object[size];
-        LinkedListNode<T> tmp = head;
-        for (int i = 0; i < size; i++) {
-            arr[i] = tmp.getData();
-            tmp = tmp.getNext();
+        Object[] arr = new Object[size];
+        LinkedListNode<T> curr = head;
+        for (int i = 0; i < size ; i++) {
+            T data = curr.getData();
+            arr[i] = data;
+            curr = curr.getNext();
         }
         return arr;
     }
