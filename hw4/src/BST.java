@@ -8,8 +8,8 @@ import java.util.LinkedList;
 /**
  * Your implementation of a binary search tree.
  *
- * @author Hwuiwon Kim
- * @userid hkim944
+ * @author Dom Fernando
+ * @userid domfernando3
  * @version 1.0
  */
 public class BST<T extends Comparable<? super T>> {
@@ -40,11 +40,11 @@ public class BST<T extends Comparable<? super T>> {
      */
     public BST(Collection<T> data) {
         if (data == null || data.contains(null)) {
-            throw new IllegalArgumentException("Data can't be null");
+            throw new IllegalArgumentException("Data cant be null or contain null elements");
         }
         size = 0;
-        for (T tmp : data) {
-            add(tmp);
+        for (T e : data) {
+            add(e);
         }
     }
 
@@ -68,7 +68,7 @@ public class BST<T extends Comparable<? super T>> {
             root = new BSTNode<>(data);
             size++;
         } else {
-            addHelper(data, root);
+            addHelper(root, data);
         }
     }
 
@@ -78,21 +78,24 @@ public class BST<T extends Comparable<? super T>> {
      * @param data the data to be added
      * @param node the root of a tree
      */
-    private void addHelper(T data, BSTNode<T> node) {
-        if (data.compareTo(node.getData()) > 0) {
-            if (node.getRight() == null) {
-                node.setRight(new BSTNode<>(data));
-                size++;
-            } else {
-                addHelper(data, node.getRight());
-            }
-        } else if (data.compareTo(node.getData()) < 0) {
+    private void addHelper(BSTNode<T> node, T data) {
+        // if data is less than the current node
+        if (data.compareTo(node.getData()) < 0 ) {
             if (node.getLeft() == null) {
                 node.setLeft(new BSTNode<>(data));
                 size++;
             } else {
-                addHelper(data, node.getLeft());
+                addHelper(node.getLeft(), data);
             }
+            // if data is more than the current node
+        } else if (data.compareTo(node.getData()) > 0) {
+            if (node.getRight() == null) {
+                node.setRight(new BSTNode<>(data));
+                size++;
+            } else {
+                addHelper(node.getRight(), data);
+            }
+
         }
     }
 
@@ -117,11 +120,13 @@ public class BST<T extends Comparable<? super T>> {
      */
     public T remove(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Data can't be null");
+            throw new IllegalArgumentException("Data cant be null");
         }
-        BSTNode<T> removed = new BSTNode<>(null);
-        root = removeHelper(data, root, removed);
-        return removed.getData();
+
+        BSTNode<T> removedNode = new BSTNode<>(null);
+        root = removeHelper(data, root, removedNode);
+
+        return removedNode.getData();
     }
 
     /**
@@ -136,13 +141,16 @@ public class BST<T extends Comparable<? super T>> {
                                     BSTNode<T> node, BSTNode<T> removed) {
         if (node == null) {
             throw new NoSuchElementException("Data is not found");
+
         } else {
-            int value = data.compareTo(node.getData());
-            if (value > 0) {
+            // if data were looking for is greater than the curr node, set right to recursive call on right subtree
+            if (data.compareTo(node.getData()) > 0) {
                 node.setRight(removeHelper(data, node.getRight(), removed));
-            } else if (value < 0) {
+            } else if (data.compareTo(node.getData()) < 0) {
                 node.setLeft(removeHelper(data, node.getLeft(), removed));
+
             } else {
+                // data is found
                 removed.setData(node.getData());
                 size--;
                 if (node.getRight() == null) {
@@ -154,9 +162,13 @@ public class BST<T extends Comparable<? super T>> {
                     node.setLeft(predecessorHelper(node.getLeft(), child));
                     node.setData(child.getData());
                 }
+
+
             }
+
+
+
         }
-        return node;
     }
 
     /**
@@ -168,12 +180,7 @@ public class BST<T extends Comparable<? super T>> {
      * @return predecessor node of an element that will be removed
      */
     private BSTNode<T> predecessorHelper(BSTNode<T> node, BSTNode<T> child) {
-        if (node.getRight() == null) {
-            child.setData(node.getData());
-            return node.getLeft();
-        }
-        node.setRight(predecessorHelper(node.getRight(), child));
-        return node;
+        if (node.getRight())
     }
 
     /**
@@ -191,10 +198,7 @@ public class BST<T extends Comparable<? super T>> {
      * tree.
      */
     public T get(T data) {
-        if (data == null) {
-            throw new IllegalArgumentException("Data can't be null");
-        }
-        return getHelper(data, root);
+
     }
 
     /**
@@ -205,18 +209,7 @@ public class BST<T extends Comparable<? super T>> {
      * @return data of a node that matches passed in parameter
      */
     private T getHelper(T data, BSTNode<T> node) {
-        if (node == null) {
-            throw new NoSuchElementException("Data is not found");
-        }
-        int value = data.compareTo(node.getData());
-        if (data.equals(node.getData())) {
-            return node.getData();
-        } else if (value < 0) {
-            return getHelper(data, node.getLeft());
-        } else if (value > 0) {
-            return getHelper(data, node.getRight());
-        }
-        return null;
+
     }
 
     /**
@@ -258,13 +251,7 @@ public class BST<T extends Comparable<? super T>> {
      * @param node the root node of a tree
      */
     private void preorderHelper(List<T> list, BSTNode<T> node) {
-        if (node == null) {
-            return;
-        } else {
-            list.add(node.getData());
-            preorderHelper(list, node.getLeft());
-            preorderHelper(list, node.getRight());
-        }
+
     }
 
     /**

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/CS1332.iml" filepath="$PROJECT_DIR$/.idea/CS1332.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw1/hw1.iml" filepath="$PROJECT_DIR$/hw1/hw1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw10/hw10.iml" filepath="$PROJECT_DIR$/hw10/hw10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw2/hw2.iml" filepath="$PROJECT_DIR$/hw2/hw2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw3/hw3.iml" filepath="$PROJECT_DIR$/hw3/hw3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw4/hw4.iml" filepath="$PROJECT_DIR$/hw4/hw4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw5/hw5.iml" filepath="$PROJECT_DIR$/hw5/hw5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw6/hw6.iml" filepath="$PROJECT_DIR$/hw6/hw6.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw7/hw7.iml" filepath="$PROJECT_DIR$/hw7/hw7.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw8/hw8.iml" filepath="$PROJECT_DIR$/hw8/hw8.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hw9/hw9.iml" filepath="$PROJECT_DIR$/hw9/hw9.iml" />
+    </modules>
+  </component>
+</project>
